@@ -1,34 +1,26 @@
-import{ Router } from 'express';
-import {products, normalizr, denormalizr} from '../controllers/controller.js'
+import { Router } from 'express';
+import { random, normalizar, denormalizar } from '../controllers/controller.js'
+import { sign, log, home, logOut } from '../controllers/log.js'
+import passport from 'passport';
+import { loggedIn } from '../middlewares/user.js';
+
+const passportOp = { badRequestMessage: 'Error,' };
 
 const router = Router();
 
-router.get('/productos-test', (req, res) => {
+router.get('/productos-random', random);
 
-    let productos = products()
+router.get('/normalizados', normalizar);
 
-    res.json({
-        msg: productos
-    })
-});
+router.get('/denormalizados', denormalizar);
 
-router.get('/normalized', (req, res) => {
+router.post('/signedUp', sign);
 
-    let normalizedmessage = normalizr();
+router.post('/loggedIn', passport.authenticate( 'logIn', passportOp), log);
 
-    res.json({
-        msg: normalizedmessage
-    })
-});
+router.get('/home', loggedIn, home);
 
-router.get('/denormalized', (req, res) => {
-
-    let denormalizedmessage = denormalizr();
-
-    res.json({
-        msg: denormalizedmessage
-    })
-});
+router.get('/loggedOut', logOut);
 
 
 export default router;
